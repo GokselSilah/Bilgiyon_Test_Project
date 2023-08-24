@@ -46,7 +46,9 @@ namespace Bilgiyon_Test_Project.WebAPI.Security.CustomMiddleware
                 }
                 catch
                 {
-                    context.Response.StatusCode = 500;
+                    context.Response.StatusCode = 401;
+                    return;
+
                 }
 
 
