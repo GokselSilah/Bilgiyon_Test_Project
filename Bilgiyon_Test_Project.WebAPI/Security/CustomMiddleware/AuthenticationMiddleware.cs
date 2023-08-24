@@ -23,8 +23,17 @@ namespace Bilgiyon_Test_Project.WebAPI.Security.CustomMiddleware
 
             if (authHeader == null)
             {
-                await _next(context);
-                return;
+                try
+                {
+                    await _next(context);
+                    return;
+                }
+                catch 
+                {
+                    context.Response.StatusCode = 401;
+                    return;
+                }
+
             }
 
             else if (authHeader != null && authHeader.StartsWith("Basic", StringComparison.OrdinalIgnoreCase))
