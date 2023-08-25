@@ -4,6 +4,7 @@ using Bilgiyon_Test_Project.DataAccess.Abstract;
 using Bilgiyon_Test_Project.DataAccess.Concrete.EntityFramework;
 using Bilgiyon_Test_Project.Entity.Concrete;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,12 +33,32 @@ namespace Bilgiyon_Test_Project.Business.Concrete
             var events = _eventDal.GetEvents(logonUser);
             List<WorkOrderModel> workOrders = new List<WorkOrderModel>();
             MobilResult<List<WorkOrderModel>> result = new MobilResult<List<WorkOrderModel>>();
+            var loggedUser = userManager.LoginUser(logonUser);
+            LogonUser credentialString = new LogonUser();
 
-            if (userManager.LoginUser(logonUser).IsSucceeded == false)
+
+            if (loggedUser.IsSucceeded==false )
             {
                 result.IsSucceeded = false;
                 result.UserMessage = "Lütfen Kullanıcı Girişi Yapınız.";                
                 return result;
+            }
+            else if (logonUser.UserName != credentialString.UserName || logonUser.Password != credentialString.Password)
+            {
+                try
+                {
+                    var token = logonUser.Token.Substring("Basic ".Length).Trim();
+                    credentialString = JsonConvert.DeserializeObject<LogonUser>(Encoding.UTF8.GetString(Convert.FromBase64String(token)));
+                }
+                catch
+                {
+                    result.IsSucceeded = false;
+                    result.UserMessage = "Unauthorized User";
+                    return result;
+                }
+                result.IsSucceeded = false;
+                result.UserMessage = "Unauthorized User";
+                return result;                
             }
             else
             {
@@ -51,12 +72,11 @@ namespace Bilgiyon_Test_Project.Business.Concrete
                         workOrders.Add(workOrder);
                     }
                 }
+
                 result.IsSucceeded = true;
                 result.TransactionResult = workOrders;
-
-
                 return result;
-            }          
+            }
 
         }
     }
