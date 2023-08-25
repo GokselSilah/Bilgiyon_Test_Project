@@ -43,23 +43,7 @@ namespace Bilgiyon_Test_Project.Business.Concrete
                 result.UserMessage = "Lütfen Kullanıcı Girişi Yapınız.";                
                 return result;
             }
-            else if (logonUser.UserName != credentialString.UserName || logonUser.Password != credentialString.Password)
-            {
-                try
-                {
-                    var token = logonUser.Token.Substring("Basic ".Length).Trim();
-                    credentialString = JsonConvert.DeserializeObject<LogonUser>(Encoding.UTF8.GetString(Convert.FromBase64String(token)));
-                }
-                catch
-                {
-                    result.IsSucceeded = false;
-                    result.UserMessage = "Unauthorized User";
-                    return result;
-                }
-                result.IsSucceeded = false;
-                result.UserMessage = "Unauthorized User";
-                return result;                
-            }
+
             else
             {
                 foreach (var item in events)
