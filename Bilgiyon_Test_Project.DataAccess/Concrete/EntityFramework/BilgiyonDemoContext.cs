@@ -12,7 +12,7 @@ namespace Bilgiyon_Test_Project.DataAccess.Concrete.EntityFramework
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Server=GOKSEL\MSSQLSERVER01;Database=BilgiyonDemo;Trusted_Connection=True;TrustServerCertificate=True");
+            optionsBuilder.UseSqlServer(@"Server=172.16.1.120,1433;Initial Catalog=BilgiyonDemo;User Id=TEST;Password=TEST");
         }
 
         public DbSet<User> R5USERS { get; set; }
